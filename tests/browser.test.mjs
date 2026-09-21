@@ -71,6 +71,9 @@ test('complete access and garden experience on desktop and mobile', { timeout: 1
         assert.equal(await page.locator('#answer').isVisible(), true);
         assert.equal(await page.locator('#access-ambience').count(), 1);
         assert.equal(await page.locator('#magic-glow').count(), 1);
+        assert.equal(await page.locator('.access-cinematic-frame').count(), 1);
+        assert.equal(await page.locator('.access-love-seal').count(), 1);
+        assert.equal(await page.locator('.card-flower').count(), 0, 'dark clover-like card ornaments must be removed');
         assert.ok(await page.locator('#petal-field .floating-petal').count() >= (viewport.width < 500 ? 8 : 20));
         assert.ok(await page.locator('#firefly-field .access-firefly').count() >= (viewport.width < 500 ? 10 : 24));
         assert.match(await page.title(), /Yadira/);
@@ -117,6 +120,11 @@ test('complete access and garden experience on desktop and mobile', { timeout: 1
         await page.locator('#granted-panel').waitFor({ state: 'visible' });
         assert.match(await page.locator('#access-status').innerText(), /Concedido/);
         await page.locator('#reveal').waitFor({ state: 'visible' });
+        assert.equal(await page.locator('.reveal-paper-shell').count(), 1);
+        assert.equal(await page.locator('.reveal-bouquet').count(), 2);
+        assert.match(await page.locator('.reveal-paper-shell').innerText(), /Era una sorpresa/i);
+        const revealBox = await page.locator('.reveal-paper-shell').boundingBox();
+        assert.ok(revealBox.width <= viewport.width - (viewport.width < 500 ? 16 : 80), 'sunflower reveal must fit the viewport');
         await page.locator('#garden').waitFor({ state: 'visible', timeout: 20000 });
         await page.locator('#reveal').waitFor({ state: 'hidden' });
         assert.equal(await page.locator('#access').isVisible(), false);
