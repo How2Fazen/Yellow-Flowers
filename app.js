@@ -5,9 +5,15 @@ const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
 const wait = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
 const verification = createVerification();
 let verificationBusy = false;
-let musicAttempted = false;
 let musicBusy = false;
 let toastTimer;
+let youtubePlayer = null;
+let youtubeReady = false;
+let youtubeApiRequested = false;
+let revealMusicPrimed = false;
+let revealMusicStarted = false;
+let desiredVolume = 0.38;
+let mutedBeforeToggle = 0.38;
 const compactAccess = matchMedia('(max-width: 760px), (pointer: coarse)');
 let ambientResizeTimer;
 
@@ -140,53 +146,259 @@ function showToast(message) {
 
 function updateMusicButton(playing) {
   $('music-button').setAttribute('aria-pressed', String(playing));
-  const label = playing ? 'Pausar música' : 'Activar música';
+  const label = playing ? 'Pausar Ninguna como tú' : 'Reanudar Ninguna como tú';
   $('music-button').setAttribute('aria-label', label);
   $('music-button').title = label;
+  $('audio-control').classList.toggle('playing', playing);
+  document.querySelector('.song-note')?.classList.toggle('playing', playing);
 }
 
-// No src means no request. Add a real file to data-src in index.html to enable music.
-async function playMusic(manual = false) {
+function updateVolumeUI() {
   const audio = $('background-music');
-  if (musicBusy || !audio.paused) return;
+  const usingLocal = Boolean(audio.dataset.src.trim());
+  const muted = usingLocal ? audio.muted : Boolean(youtubeReady && youtubePlayer?.isMuted?.());
+  const rawVolume = usingLocal ? audio.volume : (youtubeReady && youtubePlayer ? youtubePlayer.getVolume() / 100 : desiredVolume);
+  const displayed = Math.round((muted ? 0 : rawVolume) * 100);
+  $('volume-slider').value = String(displayed);
+  $('volume-value').textContent = `${displayed}%`;
+  $('volume-button').setAttribute('aria-pressed', String(muted));
+  const label = muted ? 'Activar sonido' : 'Silenciar canción';
+  $('volume-button').setAttribute('aria-label', label);
+  $('volume-button').title = label;
+  $('volume-button').querySelector('use').setAttribute('href', muted || displayed === 0 ? '#icon-volume-off' : '#icon-volume');
+}
+
+function ensureLocalAudioSource() {
+  const audio = $('background-music');
   const source = audio.dataset.src.trim();
-  if (!source) {
-    const link = audio.dataset.link?.trim();
-    if (manual && link) {
-      showToast(audio.dataset.message || 'Esta canción es la que te escribí <3');
-      window.open(link, '_blank', 'noopener,noreferrer');
-    } else if (manual) {
-      showToast('Este jardín no tiene música todavía. Las flores sí tienen mucho que decir. ♡');
-    }
+  if (source && !audio.getAttribute('src')) {
+    audio.src = source;
+    audio.load();
+  }
+  return Boolean(source);
+}
+
+function createYouTubePlayer() {
+  if (youtubePlayer || !window.YT?.Player) return;
+  const host = $('youtube-audio-host');
+  youtubePlayer = new YT.Player(host, {
+    width: '1',
+    height: '1',
+    videoId: host.dataset.videoId,
+    playerVars: { autoplay: 0, controls: 0, disablekb: 1, fs: 0, playsinline: 1, rel: 0 },
+    events: {
+      onReady: event => {
+        youtubeReady = true;
+        event.target.setVolume(Math.round(desiredVolume * 100));
+        updateVolumeUI();
+      },
+      onStateChange: event => {
+        if (!window.YT?.PlayerState) return;
+        if (event.data === YT.PlayerState.PLAYING) updateMusicButton(true);
+        if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) updateMusicButton(false);
+      },
+      onError: () => {
+        youtubeReady = false;
+        updateMusicButton(false);
+      },
+    },
+  });
+}
+
+function loadYouTubeApi() {
+  if (window.YT?.Player) {
+    createYouTubePlayer();
     return;
   }
+  if (youtubeApiRequested) return;
+  youtubeApiRequested = true;
+  const script = document.createElement('script');
+  script.src = 'https://www.youtube.com/iframe_api';
+  script.async = true;
+  script.onerror = () => { youtubeReady = false; };
+  document.head.append(script);
+}
+
+window.onYouTubeIframeAPIReady = createYouTubePlayer;
+
+function primeMusicForReveal() {
+  if (revealMusicPrimed) return;
+  revealMusicPrimed = true;
+  const audio = $('background-music');
+
+  if (ensureLocalAudioSource()) {
+    audio.volume = 0;
+    audio.muted = false;
+    audio.currentTime = 0;
+    audio.play()?.catch(() => { revealMusicPrimed = false; });
+    return;
+  }
+
+  if (youtubeReady && youtubePlayer) {
+    try {
+      youtubePlayer.mute();
+      youtubePlayer.seekTo(0, true);
+      youtubePlayer.playVideo();
+    } catch {
+      revealMusicPrimed = false;
+    }
+  }
+}
+
+function fadeLocalVolume(target, duration = 900) {
+  const audio = $('background-music');
+  const start = audio.volume;
+  const started = performance.now();
+  const step = now => {
+    const progress = Math.min(1, (now - started) / duration);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    audio.volume = start + (target - start) * eased;
+    if (progress < 1) requestAnimationFrame(step);
+    else updateVolumeUI();
+  };
+  requestAnimationFrame(step);
+}
+
+async function startRevealMusic() {
+  if (revealMusicStarted) return;
+  revealMusicStarted = true;
+  const audio = $('background-music');
+
+  if (ensureLocalAudioSource()) {
+    try {
+      audio.currentTime = 0;
+      audio.muted = false;
+      if (audio.paused) await audio.play();
+      fadeLocalVolume(desiredVolume);
+      updateMusicButton(true);
+      return;
+    } catch {
+      updateMusicButton(false);
+    }
+  }
+
+  if (youtubeReady && youtubePlayer) {
+    try {
+      youtubePlayer.seekTo(0, true);
+      youtubePlayer.setVolume(Math.round(desiredVolume * 100));
+      youtubePlayer.unMute();
+      youtubePlayer.playVideo();
+      updateMusicButton(true);
+      updateVolumeUI();
+      return;
+    } catch {
+      updateMusicButton(false);
+    }
+  }
+
+  showToast('Toca el botón de música para comenzar “Ninguna como tú” ♡');
+}
+
+async function playMusic(manual = false) {
+  if (musicBusy) return;
   musicBusy = true;
-  if (!audio.getAttribute('src')) audio.src = source;
-  audio.volume = 0.35;
+  const audio = $('background-music');
+
   try {
-    // Called synchronously from submit/click, within the browser's user gesture.
-    await audio.play();
-    updateMusicButton(true);
+    if (ensureLocalAudioSource()) {
+      audio.volume = desiredVolume;
+      audio.muted = false;
+      await audio.play();
+      updateMusicButton(true);
+      updateVolumeUI();
+      return;
+    }
+
+    if (youtubeReady && youtubePlayer) {
+      youtubePlayer.setVolume(Math.round(desiredVolume * 100));
+      youtubePlayer.unMute();
+      youtubePlayer.playVideo();
+      updateMusicButton(true);
+      updateVolumeUI();
+      return;
+    }
+
+    loadYouTubeApi();
+    if (manual) showToast('La canción está cargando… vuelve a tocar música en un momento ♡');
   } catch {
     updateMusicButton(false);
-    if (manual) showToast('No se pudo reproducir la música. Puedes seguir disfrutando del jardín.');
+    if (manual) showToast('No se pudo iniciar la canción automáticamente. Inténtalo otra vez.');
   } finally {
     musicBusy = false;
   }
 }
 
+function pauseMusic() {
+  const audio = $('background-music');
+  if (audio.dataset.src.trim()) audio.pause();
+  else if (youtubeReady && youtubePlayer) youtubePlayer.pauseVideo();
+  updateMusicButton(false);
+}
+
 $('music-button').addEventListener('click', () => {
   const audio = $('background-music');
-  if (musicBusy) return;
-  if (!audio.paused) {
-    audio.pause();
-    updateMusicButton(false);
-  } else {
-    void playMusic(true);
-  }
+  const localPlaying = Boolean(audio.dataset.src.trim()) && !audio.paused;
+  const youtubePlaying = youtubeReady && youtubePlayer && window.YT?.PlayerState &&
+    youtubePlayer.getPlayerState() === YT.PlayerState.PLAYING;
+  if (localPlaying || youtubePlaying) pauseMusic();
+  else void playMusic(true);
 });
+
+$('volume-slider').addEventListener('input', event => {
+  const value = Number(event.target.value) / 100;
+  desiredVolume = value;
+  const audio = $('background-music');
+
+  if (audio.dataset.src.trim()) {
+    audio.muted = false;
+    audio.volume = value;
+  } else if (youtubeReady && youtubePlayer) {
+    youtubePlayer.unMute();
+    youtubePlayer.setVolume(Math.round(value * 100));
+  }
+
+  $('volume-value').textContent = `${Math.round(value * 100)}%`;
+  $('volume-button').setAttribute('aria-pressed', 'false');
+  $('volume-button').querySelector('use').setAttribute('href', value === 0 ? '#icon-volume-off' : '#icon-volume');
+});
+
+$('volume-button').addEventListener('click', () => {
+  const audio = $('background-music');
+
+  if (audio.dataset.src.trim()) {
+    if (!audio.muted && audio.volume > 0) {
+      mutedBeforeToggle = audio.volume;
+      audio.muted = true;
+    } else {
+      audio.muted = false;
+      if (audio.volume === 0) {
+        audio.volume = mutedBeforeToggle || desiredVolume || .38;
+        desiredVolume = audio.volume;
+      }
+    }
+    updateVolumeUI();
+    return;
+  }
+
+  if (youtubeReady && youtubePlayer) {
+    if (youtubePlayer.isMuted() || youtubePlayer.getVolume() === 0) {
+      youtubePlayer.unMute();
+      youtubePlayer.setVolume(Math.round((mutedBeforeToggle || desiredVolume || .38) * 100));
+    } else {
+      mutedBeforeToggle = youtubePlayer.getVolume() / 100;
+      youtubePlayer.mute();
+    }
+  }
+  updateVolumeUI();
+});
+
+$('background-music').addEventListener('play', () => updateMusicButton(true));
 $('background-music').addEventListener('pause', () => updateMusicButton(false));
+$('background-music').addEventListener('volumechange', updateVolumeUI);
 $('background-music').addEventListener('error', () => updateMusicButton(false));
+
+loadYouTubeApi();
+updateVolumeUI();
 
 function updateProgress(index) {
   document.querySelectorAll('#verification-progress li').forEach((step, stepIndex) => {
@@ -201,10 +413,6 @@ function updateProgress(index) {
 $('verification-form').addEventListener('submit', async event => {
   event.preventDefault();
   if (verificationBusy) return;
-  if (!musicAttempted) {
-    musicAttempted = true;
-    void playMusic();
-  }
   const input = $('answer');
   const feedback = $('answer-feedback');
   const result = verification.submit(input.value);
@@ -226,6 +434,7 @@ $('verification-form').addEventListener('submit', async event => {
   input.removeAttribute('aria-invalid');
   feedback.classList.add('success');
   feedback.textContent = `✓ Código aceptado.\n${result.message}`;
+  if (result.complete) primeMusicForReveal();
   celebrateCorrectAnswer();
   updateProgress(result.index);
   await wait(1100);
@@ -261,6 +470,7 @@ async function revealGarden() {
     $('countdown').classList.add('number-pop');
     await wait(1050);
   }
+  await startRevealMusic();
   $('reveal').hidden = false;
   $('reveal').focus({ preventScroll: true });
   $('access').inert = true;

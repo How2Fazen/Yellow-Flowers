@@ -19,7 +19,7 @@ test('complete access and garden experience on desktop and mobile', { timeout: 1
   const browser = await chromium.launch({ headless: true, ...(process.env.BROWSER_CHANNEL ? { channel: process.env.BROWSER_CHANNEL } : {}) });
   try {
     for (const viewport of [{ width: 1440, height: 960 }, { width: 390, height: 844 }]) {
-      await t.test(`${viewport.width}px: answers, transition, flowers, views, dialogs and unavailable music`, async () => {
+      await t.test(`${viewport.width}px: answers, transition, flowers, views, dialogs and integrated music controls`, async () => {
         const context = await browser.newContext({ viewport, reducedMotion: viewport.width < 500 ? 'reduce' : 'no-preference' });
         // Exercise the complete experience without relying on any external CDN.
         await context.route(/^https:\/\//, route => route.fulfill({ status: 200, body: '', contentType: 'text/css' }));
@@ -115,15 +115,16 @@ test('complete access and garden experience on desktop and mobile', { timeout: 1
         assert.equal(await page.locator('#theme-button').getAttribute('aria-pressed'), 'true');
         await page.locator('#theme-button').click();
         assert.equal(await page.locator('#theme-button').getAttribute('aria-pressed'), 'false');
-        assert.match(await page.locator('.song-note').getAttribute('href'), /youtu\.be\/e8O4bGg1zQs/);
-        const [songPage] = await Promise.all([
-          page.waitForEvent('popup'),
-          page.locator('#music-button').click(),
-        ]);
-        assert.match(songPage.url(), /youtu\.be\/e8O4bGg1zQs/);
-        await songPage.close();
-        assert.match(await page.locator('#toast').innerText(), /canción es la que te escribí/i);
-        assert.equal(await page.locator('#background-music').getAttribute('src'), null);
+        assert.equal(await page.locator('#volume-slider').count(), 1);
+        assert.equal(await page.locator('#volume-button').count(), 1);
+        assert.equal(await page.locator('#youtube-audio-host').getAttribute('data-video-id'), 'e8O4bGg1zQs');
+        assert.match(await page.locator('.song-note').innerText(), /Ninguna como tú/i);
+        await page.locator('#volume-slider').evaluate(element => {
+          element.value = '20';
+          element.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+        assert.equal(await page.locator('#volume-value').innerText(), '20%');
+        assert.equal(await page.locator('#volume-button').getAttribute('aria-pressed'), 'false');
         await page.locator('#letter-button').click();
         assert.equal(await page.locator('#letter-dialog').isVisible(), true);
         assert.equal(await page.locator('#letter-title').innerText(), 'Querida Yadira,');

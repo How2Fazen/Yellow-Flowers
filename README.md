@@ -39,7 +39,7 @@ Tailwind CSS, Font Awesome y Google Fonts se cargan por CDN. Los estilos esencia
 
 ## Música
 
-El repositorio **no incluye ningún archivo de audio**. La experiencia enlaza a la canción de YouTube indicada por Erwin sin extraer ni redistribuir el audio. El botón musical abre ese enlace y el jardín muestra la dedicatoria “Esta canción es la que te escribí <3”.
+La experiencia musical está integrada al jardín: “Ninguna como tú” se prepara durante la última verificación y comienza justo al terminar la cuenta regresiva 3-2-1. El jardín incluye pausa/reanudación, mute y control de volumen. El reproductor prefiere un archivo local configurado en `data-src`; mientras el binario no esté dentro del repositorio, usa como respaldo el video de YouTube indicado por Erwin sin abrir otra pestaña.
 
 Para activar la música:
 
