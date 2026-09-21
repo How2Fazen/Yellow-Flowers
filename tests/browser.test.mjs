@@ -130,6 +130,13 @@ test('complete access and garden experience on desktop and mobile', { timeout: 1
         await page.locator('#reveal').waitFor({ state: 'hidden' });
         assert.equal(await page.locator('#access').isVisible(), false);
         assert.equal(await page.locator('.flower-button').count(), 11);
+        const meadowMetrics = await page.evaluate(() => {
+          const scene = document.querySelector('.flower-scene').getBoundingClientRect();
+          const flowers = document.querySelector('.flowers').getBoundingClientRect();
+          return { sceneHeight: scene.height, flowersWidth: flowers.width };
+        });
+        assert.ok(meadowMetrics.sceneHeight >= (viewport.width < 500 ? 390 : 520), 'meadow needs enough vertical depth for staggered sunflowers');
+        assert.ok(meadowMetrics.flowersWidth <= (viewport.width < 500 ? viewport.width : 1100), 'meadow composition should stay visually compact instead of stretching edge to edge');
         const centeredHeads = await page.locator('.flower-button').evaluateAll(buttons => buttons.every(button => {
           const box = button.getBoundingClientRect();
           const head = button.querySelector('use').getBoundingClientRect();
@@ -151,6 +158,19 @@ test('complete access and garden experience on desktop and mobile', { timeout: 1
         await page.locator('#bouquet-button').click();
         assert.equal(await page.locator('#garden').getAttribute('data-view'), 'bouquet');
         await page.waitForTimeout(1400);
+        const bouquetMetrics = await page.evaluate(() => {
+          const wrap = document.querySelector('.bouquet-wrap').getBoundingClientRect();
+          const leftPaper = document.querySelector('.paper-left').getBoundingClientRect();
+          const rightPaper = document.querySelector('.paper-right').getBoundingClientRect();
+          return {
+            wrapWidth: wrap.width,
+            wrapHeight: wrap.height,
+            paperSpan: Math.max(leftPaper.right, rightPaper.right) - Math.min(leftPaper.left, rightPaper.left)
+          };
+        });
+        assert.ok(bouquetMetrics.wrapWidth >= (viewport.width < 500 ? 300 : 460), 'bouquet wrapper should feel full and intentional');
+        assert.ok(bouquetMetrics.wrapHeight >= (viewport.width < 500 ? 270 : 340), 'bouquet wrapper needs enough height for layered stems and paper');
+        assert.ok(bouquetMetrics.paperSpan >= (viewport.width < 500 ? 250 : 360), 'bouquet paper should visibly wrap the flowers instead of looking like a tiny triangle');
         await clickFlower(page, 2);
         await page.locator('#next-note').click();
         assert.match(await page.locator('#note-page').innerText(), /4 \/ 11/);
