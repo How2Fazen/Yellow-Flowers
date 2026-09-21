@@ -41,11 +41,17 @@ test('complete access and garden experience on desktop and mobile', { timeout: 1
         assert.equal(await page.locator('#answer').inputValue(), '');
         assert.match(await page.locator('#verification-label').innerText(), /1\/3/);
 
-        for (const [index, answer] of [viewport.width < 500 ? '  LÍLA ' : ' MORADO ', ' AJÍ   DE GALLINA ', ' Cheesecake de MARACUYÁ '].entries()) {
+        const correctAnswers = [
+          [viewport.width < 500 ? '  LÍLA ' : ' MORADO ', 'obviamente lo sabía'],
+          [' AJÍ   DE GALLINA ', 'cómo no voy a saber eso'],
+          [' Cheesecake de MARACUYÁ ', 'jamás me olvidaría'],
+        ];
+        for (const [index, [answer, expectedReaction]] of correctAnswers.entries()) {
           assert.match(await page.locator('#question-label').innerText(), /Yadira/);
           await page.locator('#answer').fill(answer);
           await page.locator('#answer').press('Enter');
           await page.locator('#answer-feedback').filter({ hasText: 'aceptado' }).waitFor();
+          assert.match(await page.locator('#answer-feedback').innerText(), new RegExp(expectedReaction, 'i'));
           assert.equal(await page.locator('#verify-button').isDisabled(), true);
           // Extra events during the accepted animation must never skip another question.
           await page.locator('#verification-form').dispatchEvent('submit');
@@ -69,10 +75,12 @@ test('complete access and garden experience on desktop and mobile', { timeout: 1
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
         assert.equal(await page.locator('#garden-title').evaluate(el => el === document.activeElement), true);
 
+        const noteKeywords = ['ojos', 'manera tan rara', 'sabes tratarme', 'momentos más simples', 'tranquilidad', 'seguir eligiéndote'];
         for (let index = 0; index < 6; index++) {
           await clickFlower(page, index);
           assert.equal(await page.locator('#note-dialog').isVisible(), true);
           assert.match(await page.locator('#note-page').innerText(), new RegExp(`${index + 1} / 6`));
+          assert.match((await page.locator('#note-title').innerText() + ' ' + await page.locator('#note-text').innerText()).toLowerCase(), new RegExp(noteKeywords[index], 'i'));
           await page.keyboard.press('Escape');
         }
         assert.match(await page.locator('#note-count').innerText(), /6 de 6/);
@@ -91,15 +99,24 @@ test('complete access and garden experience on desktop and mobile', { timeout: 1
         assert.equal(await page.locator('#theme-button').getAttribute('aria-pressed'), 'true');
         await page.locator('#theme-button').click();
         assert.equal(await page.locator('#theme-button').getAttribute('aria-pressed'), 'false');
-        await page.locator('#music-button').click();
-        assert.match(await page.locator('#toast').innerText(), /música todavía/);
+        assert.match(await page.locator('.song-note').getAttribute('href'), /youtu\.be\/e8O4bGg1zQs/);
+        const [songPage] = await Promise.all([
+          page.waitForEvent('popup'),
+          page.locator('#music-button').click(),
+        ]);
+        assert.match(songPage.url(), /youtu\.be\/e8O4bGg1zQs/);
+        await songPage.close();
+        assert.match(await page.locator('#toast').innerText(), /canción es la que te escribí/i);
         assert.equal(await page.locator('#background-music').getAttribute('src'), null);
         await page.locator('#letter-button').click();
         assert.equal(await page.locator('#letter-dialog').isVisible(), true);
         assert.equal(await page.locator('#letter-title').innerText(), 'Querida Yadira,');
+        assert.match(await page.locator('#letter-dialog').innerText(), /volver a juntarnos/i);
+        assert.match(await page.locator('#letter-dialog .dialog-signature').innerText(), /Erwin, o mejor conocido como Ewin/);
         await page.locator('#letter-dialog .dialog-close').click();
         await page.locator('#surprise-button').click();
         assert.equal(await page.locator('#surprise-dialog').isVisible(), true);
+        assert.match(await page.locator('#surprise-title').innerText(), /camino de vuelta/i);
         await page.locator('#more-confetti').click();
         await page.keyboard.press('Escape');
         assert.deepEqual(errors, []);

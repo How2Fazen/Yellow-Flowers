@@ -2708,3 +2708,50 @@ body:has(dialog[open]) {
   }
 
 }
+
+
+/* Personal dedication for Yadira's song. */
+.song-note {
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-top:12px;
+  padding:7px 11px;
+  border:1px solid var(--garden-border);
+  border-radius:999px;
+  color:#9d7d42;
+  background:#fffaf0b8;
+  font-size:9px;
+  font-weight:600;
+  letter-spacing:.03em;
+  text-decoration:none;
+  box-shadow:0 8px 24px #725b2810;
+  transition:transform .25s ease,background .25s ease,border-color .25s ease
+}
+
+.song-note .icon {
+  width:13px;
+  height:13px
+}
+
+.song-note:hover,
+.song-note:focus-visible {
+  transform:translateY(-2px);
+  background:#fffdf6;
+  border-color:#c9a85f80;
+  outline:none
+}
+
+.garden.night .song-note {
+  color:#ead39a;
+  background:#182a2aab;
+  border-color:#d8bd7852
+}
+
+@media(max-width:760px) {
+  .song-note {
+    margin-top:10px;
+    font-size:8px;
+    padding:7px 10px
+  }
+}

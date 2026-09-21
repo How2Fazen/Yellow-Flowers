@@ -1,8 +1,8 @@
 // This is a playful reveal, not authentication. Answers are intentionally client-side.
 export const verificationQuestions = [
-  { question: '¿Cuál es el color favorito de Yadira?', answers: ['morado', 'lila'] },
-  { question: '¿Comida favorita de Yadira?', answers: ['ají de gallina'] },
-  { question: '¿Postre favorito de Yadira?', answers: ['cheesecake de maracuyá'] },
+  { question: '¿Cuál es el color favorito de Yadira?', answers: ['morado', 'lila'], successMessage: 'Pfff... obviamente lo sabía 😌' },
+  { question: '¿Comida favorita de Yadira?', answers: ['ají de gallina'], successMessage: 'Por favooor... ¿cómo no voy a saber eso? 💜' },
+  { question: '¿Postre favorito de Yadira?', answers: ['cheesecake de maracuyá'], successMessage: 'Es lo único de lo que jamás me olvidaría. 🤍' },
 ];
 
 export function normalizeAnswer(value) {
@@ -16,8 +16,9 @@ export function createVerification() {
     submit(value) {
       const question = verificationQuestions[index];
       const accepted = Boolean(question?.answers.some(answer => normalizeAnswer(answer) === normalizeAnswer(value)));
+      const message = accepted ? question.successMessage : undefined;
       if (accepted) index += 1;
-      return { accepted, complete: index === verificationQuestions.length, index };
+      return { accepted, complete: index === verificationQuestions.length, index, ...(message ? { message } : {}) };
     },
   };
 }

@@ -29,7 +29,13 @@ async function playMusic(manual = false) {
   if (musicBusy || !audio.paused) return;
   const source = audio.dataset.src.trim();
   if (!source) {
-    if (manual) showToast('Este jardín no tiene música todavía. Las flores sí tienen mucho que decir. ♡');
+    const link = audio.dataset.link?.trim();
+    if (manual && link) {
+      showToast(audio.dataset.message || 'Esta canción es la que te escribí <3');
+      window.open(link, '_blank', 'noopener,noreferrer');
+    } else if (manual) {
+      showToast('Este jardín no tiene música todavía. Las flores sí tienen mucho que decir. ♡');
+    }
     return;
   }
   musicBusy = true;
@@ -97,7 +103,7 @@ $('verification-form').addEventListener('submit', async event => {
   $('verify-button').disabled = true;
   input.removeAttribute('aria-invalid');
   feedback.classList.add('success');
-  feedback.textContent = '✓ Código aceptado.\nVerificación superada.';
+  feedback.textContent = `✓ Código aceptado.\n${result.message}`;
   updateProgress(result.index);
   await wait(1100);
   if (result.complete) {
@@ -150,12 +156,12 @@ async function revealGarden() {
 }
 
 const notes = [
-  { title: 'Tu forma de iluminar', text: 'Hay días que no necesitan más sol. Les basta con una sonrisa tuya.' },
-  { title: 'Lo bonito de coincidir', text: 'De todas las casualidades de la vida, encontrarte sigue siendo una de mis favoritas.' },
-  { title: 'La calma que me das', text: 'Ojalá este pequeño jardín te abrace un poquito, como lo hace tu presencia conmigo.' },
-  { title: 'Ser tú es suficiente', text: 'No tienes que hacer nada extraordinario para ser especial. Lo eres en tu manera tan bonita de ser tú.' },
-  { title: 'Los pequeños momentos', text: 'Me gustan las cosas sencillas: una conversación contigo, una risa inesperada, un ratito más.' },
-  { title: 'Un deseo para ti', text: 'Que nunca te falten motivos para sonreír, sueños que te emocionen y personas que te cuiden bonito.' },
+  { title: 'Tus ojos', text: 'Me gustan tus ojos. No sé si es la forma en la que miras o todo lo que transmiten, pero podría quedarme viéndolos más de lo que debería.' },
+  { title: 'Tu felicidad tan tuya', text: 'Me gusta esa manera tan rara y tan tuya en la que logras sentirte feliz. A veces no la entiendo del todo, pero me encanta verla.' },
+  { title: 'Cómo sabes tratarme', text: 'Me gusta la manera en la que sabes tratarme para hacerme feliz, incluso en esos momentos en los que ni yo sé muy bien qué necesito.' },
+  { title: 'Lo especial de lo simple', text: 'Me gusta cómo haces que hasta los momentos más simples se sientan especiales. Contigo, un rato cualquiera puede terminar siendo un recuerdo bonito.' },
+  { title: 'La calma de estar contigo', text: 'Me gusta la tranquilidad que puedo sentir cuando estoy contigo, incluso cuando las cosas no son fáciles. Hay algo en ti que siempre se siente como volver a casa.' },
+  { title: 'Seguir eligiéndote', text: 'Me gusta que, aun después de nuestros problemas, una parte de mí siempre quiera elegirte, arreglar las cosas contigo y encontrar otra vez nuestra manera de ser felices.' },
 ];
 
 function buildSunflowers() {

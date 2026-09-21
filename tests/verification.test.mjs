@@ -18,12 +18,12 @@ test('wrong or empty answers do not advance or disclose the solution', () => {
 test('accepts either favorite color and Yadira’s three answers only in order', () => {
   for (const color of [' MORADO ', ' LÍLA ']) {
     const session = createVerification();
-    assert.deepEqual(session.submit(color), { accepted: true, complete: false, index: 1 });
+    assert.deepEqual(session.submit(color), { accepted: true, complete: false, index: 1, message: 'Pfff... obviamente lo sabía 😌' });
     assert.deepEqual(session.submit('lila'), { accepted: false, complete: false, index: 1 });
     assert.deepEqual(session.submit('arroz a la cubana'), { accepted: false, complete: false, index: 1 });
-    assert.deepEqual(session.submit('Ají   de GALLINA'), { accepted: true, complete: false, index: 2 });
+    assert.deepEqual(session.submit('Ají   de GALLINA'), { accepted: true, complete: false, index: 2, message: 'Por favooor... ¿cómo no voy a saber eso? 💜' });
     assert.deepEqual(session.submit('torta de chocolate'), { accepted: false, complete: false, index: 2 });
-    assert.deepEqual(session.submit(' Cheesecake de Maracuyá '), { accepted: true, complete: true, index: 3 });
+    assert.deepEqual(session.submit(' Cheesecake de Maracuyá '), { accepted: true, complete: true, index: 3, message: 'Es lo único de lo que jamás me olvidaría. 🤍' });
     assert.deepEqual(session.submit('cheesecake de maracuya'), { accepted: false, complete: true, index: 3 });
   }
 });
