@@ -121,6 +121,7 @@ test('complete access and garden experience on desktop and mobile', { timeout: 1
         assert.match(await page.locator('#access-status').innerText(), /Concedido/);
         await page.locator('#reveal').waitFor({ state: 'visible' });
         assert.equal(await page.locator('.reveal-paper-shell').count(), 1);
+        assert.equal(await page.locator('.reveal-paper-shell').evaluate(el => el.classList.contains('visible')), true);
         assert.equal(await page.locator('.reveal-bouquet').count(), 2);
         assert.match(await page.locator('.reveal-paper-shell').innerText(), /Era una sorpresa/i);
         const revealBox = await page.locator('.reveal-paper-shell').boundingBox();
