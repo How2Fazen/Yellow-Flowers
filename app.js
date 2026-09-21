@@ -8,6 +8,128 @@ let verificationBusy = false;
 let musicAttempted = false;
 let musicBusy = false;
 let toastTimer;
+const compactAccess = matchMedia('(max-width: 760px), (pointer: coarse)');
+let ambientResizeTimer;
+
+function buildAccessPetals() {
+  const petalField = $('petal-field');
+  const fireflyField = $('firefly-field');
+  if (!petalField || !fireflyField) return;
+
+  petalField.replaceChildren();
+  fireflyField.replaceChildren();
+
+  const compact = compactAccess.matches;
+  const petalCount = compact ? 10 : 24;
+  const fireflyCount = compact ? 12 : 28;
+
+  for (let index = 0; index < petalCount; index++) {
+    const petal = document.createElement('i');
+    petal.className = 'floating-petal';
+    const seed = index + 1;
+    petal.style.cssText = [
+      `--x:${(seed * 37) % 101}%`,
+      `--size:${7 + (seed * 7) % 12}px`,
+      `--duration:${11 + (seed * 13) % 13}s`,
+      `--delay:-${(seed * 17) % 18}s`,
+      `--drift:${-55 + (seed * 29) % 110}px`,
+      `--spin:${90 + (seed * 47) % 390}deg`,
+      `--petal-opacity:${(.28 + ((seed * 11) % 55) / 100).toFixed(2)}`
+    ].join(';');
+    petalField.append(petal);
+  }
+
+  for (let index = 0; index < fireflyCount; index++) {
+    const light = document.createElement('i');
+    light.className = 'access-firefly';
+    const seed = index + 3;
+    light.style.cssText = [
+      `--x:${(seed * 43) % 100}%`,
+      `--y:${10 + (seed * 31) % 80}%`,
+      `--delay:-${(seed * 7) % 9}s`,
+      `--duration:${5 + (seed * 5) % 7}s`,
+      `--travel-x:${-18 + (seed * 13) % 36}px`,
+      `--travel-y:${-24 + (seed * 17) % 48}px`
+    ].join(';');
+    fireflyField.append(light);
+  }
+}
+
+function applyAccessDeviceMode() {
+  $('access')?.classList.toggle('mobile-lite', compactAccess.matches);
+}
+
+function setupAccessParallax() {
+  const screen = $('access');
+  const card = $('access-card');
+  const intro = document.querySelector('.access-intro');
+  const glow = $('magic-glow');
+  if (!screen || !card || !intro || !glow) return;
+
+  const reset = () => {
+    card.style.setProperty('--card-tilt-x', '0deg');
+    card.style.setProperty('--card-tilt-y', '0deg');
+    intro.style.setProperty('--intro-shift-x', '0px');
+    intro.style.setProperty('--intro-shift-y', '0px');
+  };
+
+  screen.addEventListener('pointermove', event => {
+    const bounds = screen.getBoundingClientRect();
+    const localX = event.clientX - bounds.left;
+    const localY = event.clientY - bounds.top;
+    glow.style.setProperty('--glow-x', `${localX}px`);
+    glow.style.setProperty('--glow-y', `${localY}px`);
+
+    if (motionPreference.matches || compactAccess.matches) return;
+    const rx = Math.max(-1, Math.min(1, localX / bounds.width * 2 - 1));
+    const ry = Math.max(-1, Math.min(1, localY / bounds.height * 2 - 1));
+    card.style.setProperty('--card-tilt-x', `${(-ry * 2.3).toFixed(2)}deg`);
+    card.style.setProperty('--card-tilt-y', `${(rx * 3.2).toFixed(2)}deg`);
+    intro.style.setProperty('--intro-shift-x', `${(rx * -8).toFixed(1)}px`);
+    intro.style.setProperty('--intro-shift-y', `${(ry * -5).toFixed(1)}px`);
+  });
+
+  screen.addEventListener('pointerleave', reset);
+}
+
+function spawnTapMagic(clientX, clientY, count = 7) {
+  const screen = $('access');
+  if (!screen || motionPreference.matches) return;
+  const bounds = screen.getBoundingClientRect();
+  for (let index = 0; index < count; index++) {
+    const sparkle = document.createElement('i');
+    sparkle.className = 'tap-sparkle';
+    sparkle.style.cssText = [
+      `left:${clientX - bounds.left}px`,
+      `top:${clientY - bounds.top}px`,
+      `--spark-x:${-34 + (index * 23) % 68}px`,
+      `--spark-y:${-55 + (index * 31) % 45}px`,
+      `--spark-delay:${index * 22}ms`
+    ].join(';');
+    screen.append(sparkle);
+    setTimeout(() => sparkle.remove(), 1050);
+  }
+}
+
+function setupTapMagic() {
+  const screen = $('access');
+  if (!screen) return;
+  screen.addEventListener('pointerdown', event => {
+    if (event.pointerType === 'mouse' && event.button !== 0) return;
+    spawnTapMagic(event.clientX, event.clientY, compactAccess.matches ? 5 : 8);
+  });
+}
+
+function celebrateCorrectAnswer() {
+  const card = $('access-card');
+  if (!card) return;
+  card.classList.remove('answer-celebration');
+  void card.offsetWidth;
+  card.classList.add('answer-celebration');
+  const bounds = card.getBoundingClientRect();
+  spawnTapMagic(bounds.left + bounds.width * .5, bounds.top + bounds.height * .42, compactAccess.matches ? 7 : 12);
+  setTimeout(() => card.classList.remove('answer-celebration'), 950);
+}
 
 function showToast(message) {
   clearTimeout(toastTimer);
@@ -104,6 +226,7 @@ $('verification-form').addEventListener('submit', async event => {
   input.removeAttribute('aria-invalid');
   feedback.classList.add('success');
   feedback.textContent = `✓ Código aceptado.\n${result.message}`;
+  celebrateCorrectAnswer();
   updateProgress(result.index);
   await wait(1100);
   if (result.complete) {
@@ -310,3 +433,20 @@ $('surprise-dialog').addEventListener('close', () => cancelAnimationFrame(confet
 
 buildSunflowers();
 addAtmosphere();
+buildAccessPetals();
+applyAccessDeviceMode();
+setupAccessParallax();
+setupTapMagic();
+
+compactAccess.addEventListener?.('change', () => {
+  applyAccessDeviceMode();
+  buildAccessPetals();
+});
+
+window.addEventListener('resize', () => {
+  clearTimeout(ambientResizeTimer);
+  ambientResizeTimer = setTimeout(() => {
+    applyAccessDeviceMode();
+    buildAccessPetals();
+  }, 220);
+}, { passive: true });

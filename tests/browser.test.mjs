@@ -30,10 +30,26 @@ test('complete access and garden experience on desktop and mobile', { timeout: 1
         await page.goto(`http://127.0.0.1:${server.address().port}`, { waitUntil: 'networkidle' });
         assert.equal(await page.locator('#garden').isVisible(), false);
         assert.equal(await page.locator('#answer').isVisible(), true);
+        assert.equal(await page.locator('#access-ambience').count(), 1);
+        assert.equal(await page.locator('#magic-glow').count(), 1);
+        assert.ok(await page.locator('#petal-field .floating-petal').count() >= (viewport.width < 500 ? 8 : 20));
+        assert.ok(await page.locator('#firefly-field .access-firefly').count() >= (viewport.width < 500 ? 10 : 24));
         assert.match(await page.title(), /Yadira/);
         assert.equal(await page.locator('.identity-name').innerText(), 'Yadira');
         assert.match(await page.locator('.identity-avatar').innerText(), /Y/);
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+        if (viewport.width < 500) {
+          assert.equal(await page.locator('#access').evaluate(el => el.classList.contains('mobile-lite')), true);
+          const cardBox = await page.locator('#access-card').boundingBox();
+          const buttonBox = await page.locator('#verify-button').boundingBox();
+          assert.ok(cardBox.width <= viewport.width - 12, 'access card must fit the phone viewport');
+          assert.ok(buttonBox.height >= 44, 'primary mobile action must keep a comfortable tap target');
+        } else {
+          await page.mouse.move(1100, 420);
+          await page.waitForTimeout(80);
+          const tilt = await page.locator('#access-card').evaluate(el => getComputedStyle(el).getPropertyValue('--card-tilt-y').trim());
+          assert.notEqual(tilt, '0deg', 'desktop card should react subtly to pointer movement');
+        }
         await page.locator('#verify-button').click();
         await page.locator('#answer-feedback').filter({ hasText: 'incorrecto' }).waitFor();
         await page.locator('#answer').fill('amarillo');
