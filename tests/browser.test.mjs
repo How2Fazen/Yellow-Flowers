@@ -120,7 +120,7 @@ test('complete access and garden experience on desktop and mobile', { timeout: 1
         await page.locator('#garden').waitFor({ state: 'visible', timeout: 20000 });
         await page.locator('#reveal').waitFor({ state: 'hidden' });
         assert.equal(await page.locator('#access').isVisible(), false);
-        assert.equal(await page.locator('.flower-button').count(), 6);
+        assert.equal(await page.locator('.flower-button').count(), 11);
         const centeredHeads = await page.locator('.flower-button').evaluateAll(buttons => buttons.every(button => {
           const box = button.getBoundingClientRect();
           const head = button.querySelector('use').getBoundingClientRect();
@@ -130,23 +130,23 @@ test('complete access and garden experience on desktop and mobile', { timeout: 1
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
         assert.equal(await page.locator('#garden-title').evaluate(el => el === document.activeElement), true);
 
-        const noteKeywords = ['ojos', 'manera tan rara', 'sabes tratarme', 'momentos más simples', 'tranquilidad', 'seguir eligiéndote'];
-        for (let index = 0; index < 6; index++) {
+        const noteKeywords = ['ojos', 'manera tan rara', 'sabes tratarme', 'momentos más simples', 'tranquilidad', 'seguir eligiéndote', 'sigue buscándote', 'todo lo que todavía nos falta', 'lugar que nadie más ocupa igual', 'intentarlo otra vez', 'por fin éramos felices'];
+        for (let index = 0; index < 11; index++) {
           await clickFlower(page, index);
           assert.equal(await page.locator('#note-dialog').isVisible(), true);
-          assert.match(await page.locator('#note-page').innerText(), new RegExp(`${index + 1} / 6`));
+          assert.match(await page.locator('#note-page').innerText(), new RegExp(`${index + 1} / 11`));
           assert.match((await page.locator('#note-title').innerText() + ' ' + await page.locator('#note-text').innerText()).toLowerCase(), new RegExp(noteKeywords[index], 'i'));
           await page.keyboard.press('Escape');
         }
-        assert.match(await page.locator('#note-count').innerText(), /6 de 6/);
+        assert.match(await page.locator('#note-count').innerText(), /11 de 11/);
         await page.locator('#bouquet-button').click();
         assert.equal(await page.locator('#garden').getAttribute('data-view'), 'bouquet');
         await page.waitForTimeout(1400);
         await clickFlower(page, 2);
         await page.locator('#next-note').click();
-        assert.match(await page.locator('#note-page').innerText(), /4 \/ 6/);
+        assert.match(await page.locator('#note-page').innerText(), /4 \/ 11/);
         await page.locator('#previous-note').click();
-        assert.match(await page.locator('#note-page').innerText(), /3 \/ 6/);
+        assert.match(await page.locator('#note-page').innerText(), /3 \/ 11/);
         await page.locator('#note-dialog .dialog-close').click();
         await page.locator('#meadow-button').click();
         assert.equal(await page.locator('#garden').getAttribute('data-view'), 'meadow');

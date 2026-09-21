@@ -4062,3 +4062,130 @@ body {
     flex-basis:30px
   }
 }
+
+
+/* =========================================================
+   ELEVEN SUNFLOWERS — a fuller romantic garden for Yadira
+   ========================================================= */
+
+.flower-scene {
+  height:610px
+}
+
+.flower {
+  width:104px;
+  bottom:40px
+}
+
+.flower-button {
+  width:116px;
+  height:116px
+}
+
+.flower:nth-child(1)  { left:1%;  height:245px; --tilt:-12deg; z-index:7 }
+.flower:nth-child(2)  { left:9%;  height:365px; --tilt:-8deg;  z-index:3 }
+.flower:nth-child(3)  { left:17%; height:295px; --tilt:-3deg;  z-index:6 }
+.flower:nth-child(4)  { left:25%; height:440px; --tilt:4deg;   z-index:2 }
+.flower:nth-child(5)  { left:33%; height:325px; --tilt:8deg;   z-index:5 }
+.flower:nth-child(6)  { left:41%; height:405px; --tilt:-2deg;  z-index:3 }
+.flower:nth-child(7)  { left:49%; height:275px; --tilt:6deg;   z-index:8 }
+.flower:nth-child(8)  { left:57%; height:455px; --tilt:-6deg;  z-index:2 }
+.flower:nth-child(9)  { left:65%; height:340px; --tilt:9deg;   z-index:5 }
+.flower:nth-child(10) { left:73%; height:390px; --tilt:3deg;   z-index:4 }
+.flower:nth-child(11) { left:82%; height:255px; --tilt:12deg;  z-index:9 }
+
+.garden[data-view="bouquet"] .flower-button {
+  width:112px;
+  height:112px
+}
+
+.garden[data-view="bouquet"] .flower:nth-child(1)  { left:calc(50% - 210px); height:285px; --tilt:-22deg; z-index:3 }
+.garden[data-view="bouquet"] .flower:nth-child(2)  { left:calc(50% - 170px); height:355px; --tilt:-16deg; z-index:4 }
+.garden[data-view="bouquet"] .flower:nth-child(3)  { left:calc(50% - 132px); height:430px; --tilt:-11deg; z-index:2 }
+.garden[data-view="bouquet"] .flower:nth-child(4)  { left:calc(50% - 92px);  height:325px; --tilt:-6deg;  z-index:6 }
+.garden[data-view="bouquet"] .flower:nth-child(5)  { left:calc(50% - 50px);  height:400px; --tilt:-2deg;  z-index:4 }
+.garden[data-view="bouquet"] .flower:nth-child(6)  { left:calc(50% - 5px);   height:465px; --tilt:1deg;   z-index:2 }
+.garden[data-view="bouquet"] .flower:nth-child(7)  { left:calc(50% + 38px);  height:375px; --tilt:5deg;   z-index:5 }
+.garden[data-view="bouquet"] .flower:nth-child(8)  { left:calc(50% + 80px);  height:435px; --tilt:10deg;  z-index:3 }
+.garden[data-view="bouquet"] .flower:nth-child(9)  { left:calc(50% + 118px); height:315px; --tilt:16deg;  z-index:6 }
+.garden[data-view="bouquet"] .flower:nth-child(10) { left:calc(50% - 118px); height:255px; --tilt:-13deg; z-index:8 }
+.garden[data-view="bouquet"] .flower:nth-child(11) { left:calc(50% + 54px);  height:260px; --tilt:13deg;  z-index:8 }
+
+@media(max-width:760px) {
+  .flower-scene {
+    height:455px
+  }
+
+  .flower {
+    width:72px;
+    bottom:34px
+  }
+
+  .flower-button {
+    width:82px;
+    height:82px
+  }
+
+  .flower:nth-child(1)  { left:0%;  height:170px; --tilt:-13deg }
+  .flower:nth-child(2)  { left:8%;  height:265px; --tilt:-9deg }
+  .flower:nth-child(3)  { left:16%; height:205px; --tilt:-5deg }
+  .flower:nth-child(4)  { left:24%; height:330px; --tilt:3deg }
+  .flower:nth-child(5)  { left:32%; height:235px; --tilt:8deg }
+  .flower:nth-child(6)  { left:40%; height:300px; --tilt:-2deg }
+  .flower:nth-child(7)  { left:48%; height:190px; --tilt:6deg }
+  .flower:nth-child(8)  { left:56%; height:345px; --tilt:-6deg }
+  .flower:nth-child(9)  { left:64%; height:245px; --tilt:9deg }
+  .flower:nth-child(10) { left:72%; height:285px; --tilt:4deg }
+  .flower:nth-child(11) { left:80%; height:175px; --tilt:13deg }
+
+  .flower-stem {
+    top:43px
+  }
+
+  .stem-leaf {
+    width:38px;
+    height:22px
+  }
+
+  .stem-leaf.second {
+    width:34px;
+    height:20px
+  }
+
+  .garden[data-view="bouquet"] .flower-button {
+    width:82px;
+    height:82px
+  }
+
+  .garden[data-view="bouquet"] .flower:nth-child(1)  { left:calc(50% - 116px); height:210px; --tilt:-24deg }
+  .garden[data-view="bouquet"] .flower:nth-child(2)  { left:calc(50% - 92px);  height:272px; --tilt:-18deg }
+  .garden[data-view="bouquet"] .flower:nth-child(3)  { left:calc(50% - 67px);  height:330px; --tilt:-12deg }
+  .garden[data-view="bouquet"] .flower:nth-child(4)  { left:calc(50% - 42px);  height:245px; --tilt:-7deg }
+  .garden[data-view="bouquet"] .flower:nth-child(5)  { left:calc(50% - 17px);  height:300px; --tilt:-3deg }
+  .garden[data-view="bouquet"] .flower:nth-child(6)  { left:calc(50% + 8px);   height:345px; --tilt:1deg }
+  .garden[data-view="bouquet"] .flower:nth-child(7)  { left:calc(50% + 32px);  height:282px; --tilt:6deg }
+  .garden[data-view="bouquet"] .flower:nth-child(8)  { left:calc(50% + 55px);  height:322px; --tilt:11deg }
+  .garden[data-view="bouquet"] .flower:nth-child(9)  { left:calc(50% + 78px);  height:232px; --tilt:18deg }
+  .garden[data-view="bouquet"] .flower:nth-child(10) { left:calc(50% - 72px);  height:188px; --tilt:-14deg; z-index:9 }
+  .garden[data-view="bouquet"] .flower:nth-child(11) { left:calc(50% + 39px);  height:192px; --tilt:14deg;  z-index:9 }
+}
+
+@media(max-width:430px) {
+  .flower-scene {
+    height:430px
+  }
+
+  .flower {
+    width:68px
+  }
+
+  .flower-button {
+    width:76px;
+    height:76px
+  }
+
+  .garden[data-view="bouquet"] .flower-button {
+    width:76px;
+    height:76px
+  }
+}

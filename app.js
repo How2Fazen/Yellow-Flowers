@@ -495,6 +495,11 @@ const notes = [
   { title: 'Lo especial de lo simple', text: 'Me gusta cómo haces que hasta los momentos más simples se sientan especiales. Contigo, un rato cualquiera puede terminar siendo un recuerdo bonito.' },
   { title: 'La calma de estar contigo', text: 'Me gusta la tranquilidad que puedo sentir cuando estoy contigo, incluso cuando las cosas no son fáciles. Hay algo en ti que siempre se siente como volver a casa.' },
   { title: 'Seguir eligiéndote', text: 'Me gusta que, aun después de nuestros problemas, una parte de mí siempre quiera elegirte, arreglar las cosas contigo y encontrar otra vez nuestra manera de ser felices.' },
+  { title: 'Tu forma de quedarte', text: 'Me gusta que incluso cuando discutimos, hay una parte de mí que sigue buscándote. Como si mi corazón supiera que contigo todavía quedan cosas bonitas por vivir.' },
+  { title: 'Cuando pienso en nosotros', text: 'A veces imagino todo lo que todavía nos falta: más risas, más abrazos, más días tranquilos y más momentos que algún día recordaremos diciendo: valió la pena.' },
+  { title: 'Tu lugar en mí', text: 'Hay personas que pasan por tu vida y hay personas que se quedan dentro de ella. Tú, de alguna manera, ya tienes un lugar que nadie más ocupa igual.' },
+  { title: 'Volver a elegirnos', text: 'No quiero que seamos perfectos. Quiero que aprendamos, que arreglemos lo que haga falta y que incluso después de un mal día podamos mirarnos y decidir intentarlo otra vez.' },
+  { title: 'Mi deseo contigo', text: 'Si la vida me deja pedir una cosa, quiero que sea esta: que algún día podamos mirar hacia atrás y sentir que todos los problemas que superamos nos llevaron justo al lugar donde por fin éramos felices.' },
 ];
 
 function buildSunflowers() {
@@ -548,7 +553,7 @@ function renderNote(index) {
   $('previous-note').disabled = index === 0;
   $('next-note').disabled = index === notes.length - 1;
   document.querySelectorAll('.flower-button')[index].classList.add('visited');
-  $('note-count').textContent = `${visitedNotes.size} de 6 pequeños motivos descubiertos.`;
+  $('note-count').textContent = `${visitedNotes.size} de ${notes.length} motivos descubiertos.`;
 }
 function openNote(index) {
   renderNote(index);
