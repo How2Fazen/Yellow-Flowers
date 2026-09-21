@@ -4862,3 +4862,431 @@ body {
     transition:none!important
   }
 }
+
+
+/* =========================================================
+   MEADOW + BOUQUET COMPOSITION REWORK
+   ========================================================= */
+
+.flower-scene {
+  position:relative;
+  height:560px;
+  width:100%;
+  margin-top:8px;
+  overflow:hidden
+}
+
+.flowers {
+  position:absolute;
+  inset:0;
+  z-index:3;
+  width:min(92vw,1080px);
+  max-width:1080px;
+  margin:0 auto
+}
+
+.hill-back {
+  height:230px;
+  bottom:52px;
+  background:
+    radial-gradient(circle at 50% 20%,#7a8e5c26 0%,transparent 55%),
+    linear-gradient(180deg,#314935 0%,#243a32 100%);
+  opacity:.72;
+  transform:rotate(-2.5deg)
+}
+
+.hill-front {
+  height:190px;
+  bottom:8px;
+  background:
+    radial-gradient(circle at 50% 10%,#839b5b22 0%,transparent 52%),
+    linear-gradient(180deg,#253a31 0%,#13252a 100%);
+  transform:rotate(2deg);
+  opacity:.96
+}
+
+.flower {
+  position:absolute;
+  bottom:58px;
+  width:112px;
+  transform-origin:50% 100%;
+  transition:
+    left 1.2s cubic-bezier(.22,.68,.26,1),
+    bottom 1.2s cubic-bezier(.22,.68,.26,1),
+    height 1.2s cubic-bezier(.22,.68,.26,1),
+    transform 1.2s cubic-bezier(.22,.68,.26,1);
+  animation:sway 6s ease-in-out infinite alternate;
+  --tilt:0deg
+}
+
+.flower-button {
+  width:122px;
+  height:122px;
+  left:50%;
+  top:0;
+  transform:translateX(-50%);
+  filter:drop-shadow(0 10px 18px #0000002e)
+}
+
+.flower-button:hover {
+  scale:1.06;
+  filter:drop-shadow(0 10px 22px #d4ad5259)
+}
+
+.flower-stem {
+  top:60px;
+  width:5px;
+  left:calc(50% - 2.5px);
+  background:linear-gradient(180deg,#5f7541 0%,#3e5a36 52%,#314c31 100%)
+}
+
+.stem-leaf {
+  width:54px;
+  height:30px;
+  top:54%;
+  background:linear-gradient(150deg,#7b9254,#49633c)
+}
+
+.stem-leaf.second {
+  width:48px;
+  height:26px;
+  top:70%
+}
+
+.scene-grass {
+  bottom:48px;
+  height:130px;
+  opacity:.52
+}
+
+.grass-blade {
+  background:linear-gradient(180deg,#6a8755,#425839)
+}
+
+.distant-flowers {
+  inset:92px 0 82px;
+  opacity:.22
+}
+
+.fireflies {
+  opacity:.72
+}
+
+/* Staggered meadow: foreground, middle and background depth. */
+.flower:nth-child(1)  { left:3%;  height:220px; --tilt:-18deg; z-index:8; animation-delay:-.9s }
+.flower:nth-child(2)  { left:10%; height:340px; --tilt:-10deg; z-index:5; animation-delay:-2.8s }
+.flower:nth-child(3)  { left:18%; height:270px; --tilt:8deg;   z-index:9; animation-delay:-1.7s }
+.flower:nth-child(4)  { left:28%; height:440px; --tilt:-4deg;  z-index:4; animation-delay:-4.4s }
+.flower:nth-child(5)  { left:38%; height:305px; --tilt:7deg;   z-index:8; animation-delay:-2.1s }
+.flower:nth-child(6)  { left:46%; height:470px; --tilt:-1deg;  z-index:3; animation-delay:-5.2s }
+.flower:nth-child(7)  { left:55%; height:360px; --tilt:4deg;   z-index:7; animation-delay:-3.6s }
+.flower:nth-child(8)  { left:63%; height:455px; --tilt:-6deg;  z-index:4; animation-delay:-4.8s }
+.flower:nth-child(9)  { left:71%; height:300px; --tilt:8deg;   z-index:8; animation-delay:-2.6s }
+.flower:nth-child(10) { left:80%; height:400px; --tilt:10deg;  z-index:5; animation-delay:-3.4s }
+.flower:nth-child(11) { left:88%; height:235px; --tilt:14deg;  z-index:9; animation-delay:-.6s }
+
+/* A fuller paper wrap that actually gathers the stems. */
+.bouquet-wrap {
+  position:absolute;
+  width:min(500px,92vw);
+  height:360px;
+  bottom:16px;
+  left:50%;
+  transform:translateX(-50%) translateY(34px) scale(.97);
+  z-index:2;
+  opacity:0;
+  transition:
+    opacity .8s ease,
+    transform 1s cubic-bezier(.22,.68,.26,1);
+  pointer-events:none;
+  filter:drop-shadow(0 24px 26px #00000024)
+}
+
+.bouquet-wrap:before {
+  content:'';
+  position:absolute;
+  left:50%;
+  bottom:24px;
+  width:330px;
+  height:62px;
+  transform:translateX(-50%);
+  border-radius:50%;
+  background:radial-gradient(ellipse at center,#08101447 0%,#08101400 72%);
+  z-index:0
+}
+
+.bouquet-wrap:after {
+  content:'';
+  position:absolute;
+  left:50%;
+  bottom:78px;
+  width:290px;
+  height:150px;
+  transform:translateX(-50%);
+  background:radial-gradient(circle at center,#fff4d543 0%,#fff4d500 72%);
+  z-index:1;
+  pointer-events:none
+}
+
+.paper {
+  position:absolute;
+  bottom:22px;
+  width:228px;
+  height:190px;
+  border-radius:18px 18px 22px 22px;
+  filter:drop-shadow(0 8px 10px #4a361c24);
+  z-index:2
+}
+
+.paper-left {
+  left:56px;
+  background:linear-gradient(130deg,#e9d7bafa,#fcf1d8f5);
+  clip-path:polygon(0 10%,100% 0,72% 100%,16% 86%);
+  transform:rotate(-18deg);
+  transform-origin:bottom left
+}
+
+.paper-right {
+  right:56px;
+  background:linear-gradient(130deg,#f4e4c8fa,#fff4e1f5);
+  clip-path:polygon(0 0,100% 10%,84% 86%,28% 100%);
+  transform:scaleX(-1) rotate(-18deg);
+  transform-origin:bottom right
+}
+
+.bouquet-ribbon {
+  position:absolute;
+  left:50%;
+  bottom:88px;
+  transform:translateX(-50%) rotate(-4deg);
+  width:132px;
+  z-index:5;
+  text-align:center;
+  padding:10px 8px;
+  border-radius:2px;
+  background:linear-gradient(135deg,#b798bd,#9f85af);
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:20px;
+  color:#fff7ef;
+  box-shadow:0 6px 12px #4930422e
+}
+
+.garden[data-view="bouquet"] .bouquet-wrap {
+  opacity:1;
+  transform:translateX(-50%) translateY(0) scale(1);
+  z-index:4
+}
+
+.garden[data-view="bouquet"] .hill,
+.garden[data-view="bouquet"] .distant-flowers,
+.garden[data-view="bouquet"] .scene-grass {
+  opacity:0
+}
+
+.garden[data-view="bouquet"] .flower-scene:before {
+  content:'';
+  position:absolute;
+  left:50%;
+  bottom:54px;
+  width:min(560px,84vw);
+  height:420px;
+  transform:translateX(-50%);
+  background:
+    radial-gradient(circle at 50% 28%,#fff2d12e 0%,#fff2d100 68%),
+    radial-gradient(circle at 50% 85%,#ffeaba1a 0%,#ffeaba00 76%);
+  z-index:1;
+  pointer-events:none
+}
+
+.garden[data-view="bouquet"] .flower {
+  bottom:86px;
+  width:108px
+}
+
+/* Three layered rows form a believable fan-shaped bouquet. */
+.garden[data-view="bouquet"] .flower:nth-child(1)  { left:calc(50% - 165px); height:250px; --tilt:-22deg; z-index:6 }
+.garden[data-view="bouquet"] .flower:nth-child(2)  { left:calc(50% - 126px); height:332px; --tilt:-15deg; z-index:4 }
+.garden[data-view="bouquet"] .flower:nth-child(3)  { left:calc(50% - 93px);  height:390px; --tilt:-10deg; z-index:3 }
+.garden[data-view="bouquet"] .flower:nth-child(4)  { left:calc(50% - 58px);  height:286px; --tilt:-6deg;  z-index:7 }
+.garden[data-view="bouquet"] .flower:nth-child(5)  { left:calc(50% - 25px);  height:430px; --tilt:-2deg;  z-index:2 }
+.garden[data-view="bouquet"] .flower:nth-child(6)  { left:calc(50% + 6px);   height:295px; --tilt:2deg;   z-index:8 }
+.garden[data-view="bouquet"] .flower:nth-child(7)  { left:calc(50% + 40px);  height:455px; --tilt:4deg;   z-index:1 }
+.garden[data-view="bouquet"] .flower:nth-child(8)  { left:calc(50% + 76px);  height:356px; --tilt:8deg;   z-index:5 }
+.garden[data-view="bouquet"] .flower:nth-child(9)  { left:calc(50% + 108px); height:418px; --tilt:12deg;  z-index:3 }
+.garden[data-view="bouquet"] .flower:nth-child(10) { left:calc(50% + 143px); height:308px; --tilt:18deg;  z-index:6 }
+.garden[data-view="bouquet"] .flower:nth-child(11) { left:calc(50% - 138px); height:214px; --tilt:-18deg; z-index:9 }
+
+.garden[data-view="bouquet"] .flower-button {
+  width:112px;
+  height:112px
+}
+
+.garden[data-view="bouquet"] .flower-stem {
+  top:54px;
+  filter:brightness(.9)
+}
+
+.garden[data-view="bouquet"] .stem-leaf {
+  opacity:.78;
+  transform:rotate(-26deg) scale(.92)
+}
+
+.garden[data-view="bouquet"] .stem-leaf.second {
+  transform:scaleX(-1) rotate(-24deg) scale(.88)
+}
+
+.garden[data-view="bouquet"] .scene-caption {
+  bottom:6px
+}
+
+.night .hill-back {
+  background:
+    radial-gradient(circle at 50% 20%,#80935d14 0%,transparent 56%),
+    linear-gradient(180deg,#284134 0%,#182e2a 100%)
+}
+
+.night .hill-front {
+  background:
+    radial-gradient(circle at 50% 10%,#82985c10 0%,transparent 48%),
+    linear-gradient(180deg,#1c332f 0%,#0d1e24 100%)
+}
+
+.night .bouquet-wrap:before {
+  background:radial-gradient(ellipse at center,#00000057 0%,#00000000 72%)
+}
+
+.night .paper-left {
+  background:linear-gradient(130deg,#e8d8bff5,#faeed6f0)
+}
+
+.night .paper-right {
+  background:linear-gradient(130deg,#f4e4caf5,#fff2dcf0)
+}
+
+@media(max-width:760px) {
+  .flower-scene {
+    height:430px
+  }
+
+  .flowers {
+    width:min(96vw,430px);
+    max-width:430px
+  }
+
+  .flower {
+    width:74px;
+    bottom:42px
+  }
+
+  .flower-button {
+    width:82px;
+    height:82px
+  }
+
+  .flower-stem {
+    top:40px;
+    width:4px;
+    left:calc(50% - 2px)
+  }
+
+  .stem-leaf {
+    width:34px;
+    height:20px
+  }
+
+  .stem-leaf.second {
+    width:30px;
+    height:17px
+  }
+
+  .scene-grass {
+    bottom:34px;
+    height:90px
+  }
+
+  .flower:nth-child(1)  { left:1%;  height:160px }
+  .flower:nth-child(2)  { left:8%;  height:245px }
+  .flower:nth-child(3)  { left:16%; height:195px }
+  .flower:nth-child(4)  { left:24%; height:308px }
+  .flower:nth-child(5)  { left:34%; height:230px }
+  .flower:nth-child(6)  { left:43%; height:330px }
+  .flower:nth-child(7)  { left:52%; height:255px }
+  .flower:nth-child(8)  { left:60%; height:320px }
+  .flower:nth-child(9)  { left:69%; height:220px }
+  .flower:nth-child(10) { left:78%; height:290px }
+  .flower:nth-child(11) { left:87%; height:170px }
+
+  .bouquet-wrap {
+    width:min(340px,94vw);
+    height:292px;
+    bottom:10px
+  }
+
+  .paper {
+    height:152px;
+    width:172px;
+    bottom:18px
+  }
+
+  .paper-left {
+    left:28px
+  }
+
+  .paper-right {
+    right:28px
+  }
+
+  .bouquet-ribbon {
+    width:104px;
+    font-size:16px;
+    bottom:70px;
+    padding:8px 6px
+  }
+
+  .garden[data-view="bouquet"] .flower {
+    bottom:70px;
+    width:74px
+  }
+
+  .garden[data-view="bouquet"] .flower-button {
+    width:82px;
+    height:82px
+  }
+
+  .garden[data-view="bouquet"] .flower:nth-child(1)  { left:calc(50% - 112px); height:170px }
+  .garden[data-view="bouquet"] .flower:nth-child(2)  { left:calc(50% - 88px);  height:232px }
+  .garden[data-view="bouquet"] .flower:nth-child(3)  { left:calc(50% - 66px);  height:272px }
+  .garden[data-view="bouquet"] .flower:nth-child(4)  { left:calc(50% - 44px);  height:188px }
+  .garden[data-view="bouquet"] .flower:nth-child(5)  { left:calc(50% - 22px);  height:292px }
+  .garden[data-view="bouquet"] .flower:nth-child(6)  { left:calc(50% + 0px);   height:206px }
+  .garden[data-view="bouquet"] .flower:nth-child(7)  { left:calc(50% + 22px);  height:304px }
+  .garden[data-view="bouquet"] .flower:nth-child(8)  { left:calc(50% + 46px);  height:248px }
+  .garden[data-view="bouquet"] .flower:nth-child(9)  { left:calc(50% + 68px);  height:282px }
+  .garden[data-view="bouquet"] .flower:nth-child(10) { left:calc(50% + 90px);  height:210px }
+  .garden[data-view="bouquet"] .flower:nth-child(11) { left:calc(50% - 98px);  height:146px }
+
+  .garden[data-view="bouquet"] .flower-scene:before {
+    width:min(340px,94vw);
+    height:300px;
+    bottom:42px
+  }
+}
+
+@media(max-width:430px) {
+  .flower-scene {
+    height:400px
+  }
+
+  .note-count {
+    font-size:13px
+  }
+
+  .bouquet-wrap {
+    width:min(320px,96vw)
+  }
+
+  .bouquet-ribbon {
+    font-size:15px
+  }
+}
