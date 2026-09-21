@@ -1,6 +1,6 @@
 # Yellow Flowers 🌻
 
-Una sorpresa interactiva para Abigail: un acceso misterioso que se transforma en un jardín de girasoles. Sitio estático, sin cuentas, sin base de datos y sin compilación.
+Una sorpresa interactiva para Yadira: un acceso misterioso que se transforma en un jardín de girasoles. Sitio estático, sin cuentas, sin base de datos y sin compilación.
 
 ## Abrir el proyecto
 
@@ -14,7 +14,7 @@ Abre **http://127.0.0.1:4173**. También puedes usar cualquier servidor de archi
 
 ## La experiencia
 
-- Tres verificaciones sobre Abigail, con normalización de mayúsculas, espacios y acentos.
+- Tres verificaciones sobre Yadira, con normalización de mayúsculas, espacios y acentos.
 - Errores con feedback y reintento; protección frente a envíos repetidos.
 - Acceso concedido, cuenta regresiva, pausa negra y revelación cinematográfica.
 - Seis girasoles dibujados en SVG, cada uno con una nota.

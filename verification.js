@@ -1,8 +1,8 @@
 // This is a playful reveal, not authentication. Answers are intentionally client-side.
 export const verificationQuestions = [
-  { question: '¿Cuál es el color favorito de Abigail?', answers: ['lila'] },
-  { question: '¿Comida favorita de Abigail?', answers: ['arroz a la cubana'] },
-  { question: '¿Postre favorito de Abigail?', answers: ['torta de chocolate'] },
+  { question: '¿Cuál es el color favorito de Yadira?', answers: ['morado', 'lila'] },
+  { question: '¿Comida favorita de Yadira?', answers: ['ají de gallina'] },
+  { question: '¿Postre favorito de Yadira?', answers: ['cheesecake de maracuyá'] },
 ];
 
 export function normalizeAnswer(value) {

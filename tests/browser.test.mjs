@@ -30,6 +30,9 @@ test('complete access and garden experience on desktop and mobile', { timeout: 1
         await page.goto(`http://127.0.0.1:${server.address().port}`, { waitUntil: 'networkidle' });
         assert.equal(await page.locator('#garden').isVisible(), false);
         assert.equal(await page.locator('#answer').isVisible(), true);
+        assert.match(await page.title(), /Yadira/);
+        assert.equal(await page.locator('.identity-name').innerText(), 'Yadira');
+        assert.match(await page.locator('.identity-avatar').innerText(), /Y/);
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
         await page.locator('#verify-button').click();
         await page.locator('#answer-feedback').filter({ hasText: 'incorrecto' }).waitFor();
@@ -38,7 +41,8 @@ test('complete access and garden experience on desktop and mobile', { timeout: 1
         assert.equal(await page.locator('#answer').inputValue(), '');
         assert.match(await page.locator('#verification-label').innerText(), /1\/3/);
 
-        for (const [index, answer] of ['  LÍLA ', ' ARROZ   A LA CUBANA ', ' Tórta de CHOCOLATE '].entries()) {
+        for (const [index, answer] of [viewport.width < 500 ? '  LÍLA ' : ' MORADO ', ' AJÍ   DE GALLINA ', ' Cheesecake de MARACUYÁ '].entries()) {
+          assert.match(await page.locator('#question-label').innerText(), /Yadira/);
           await page.locator('#answer').fill(answer);
           await page.locator('#answer').press('Enter');
           await page.locator('#answer-feedback').filter({ hasText: 'aceptado' }).waitFor();
@@ -92,6 +96,7 @@ test('complete access and garden experience on desktop and mobile', { timeout: 1
         assert.equal(await page.locator('#background-music').getAttribute('src'), null);
         await page.locator('#letter-button').click();
         assert.equal(await page.locator('#letter-dialog').isVisible(), true);
+        assert.equal(await page.locator('#letter-title').innerText(), 'Querida Yadira,');
         await page.locator('#letter-dialog .dialog-close').click();
         await page.locator('#surprise-button').click();
         assert.equal(await page.locator('#surprise-dialog').isVisible(), true);
