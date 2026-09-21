@@ -22,7 +22,46 @@ test('complete access and garden experience on desktop and mobile', { timeout: 1
       await t.test(`${viewport.width}px: answers, transition, flowers, views, dialogs and integrated music controls`, async () => {
         const context = await browser.newContext({ viewport, reducedMotion: viewport.width < 500 ? 'reduce' : 'no-preference' });
         // Exercise the complete experience without relying on any external CDN.
-        await context.route(/^https:\/\//, route => route.fulfill({ status: 200, body: '', contentType: 'text/css' }));
+        await context.route(/^https:\/\//, route => {
+          const url = route.request().url();
+          if (url.includes('youtube.com/iframe_api')) {
+            return route.fulfill({
+              status: 200,
+              contentType: 'application/javascript',
+              body: `
+                window.YT = {
+                  PlayerState: { UNSTARTED: -1, ENDED: 0, PLAYING: 1, PAUSED: 2, BUFFERING: 3, CUED: 5 },
+                  Player: function(host, options) {
+                    let state = -1;
+                    let volume = 38;
+                    let muted = false;
+                    const player = {
+                      setVolume(value) { volume = Number(value); },
+                      getVolume() { return volume; },
+                      mute() { muted = true; },
+                      unMute() { muted = false; },
+                      isMuted() { return muted; },
+                      seekTo() {},
+                      playVideo() {
+                        state = 1;
+                        options.events?.onStateChange?.({ data: 1 });
+                      },
+                      pauseVideo() {
+                        state = 2;
+                        options.events?.onStateChange?.({ data: 2 });
+                      },
+                      getPlayerState() { return state; },
+                    };
+                    setTimeout(() => options.events?.onReady?.({ target: player }), 0);
+                    return player;
+                  },
+                };
+                setTimeout(() => window.onYouTubeIframeAPIReady?.(), 0);
+              `,
+            });
+          }
+          return route.fulfill({ status: 200, body: '', contentType: 'text/css' });
+        });
         const page = await context.newPage();
         const errors = [];
         page.on('pageerror', error => errors.push(error.message));
@@ -125,6 +164,15 @@ test('complete access and garden experience on desktop and mobile', { timeout: 1
         });
         assert.equal(await page.locator('#volume-value').innerText(), '20%');
         assert.equal(await page.locator('#volume-button').getAttribute('aria-pressed'), 'false');
+        assert.equal(await page.locator('#music-button').getAttribute('aria-pressed'), 'true', 'song should be playing after the countdown');
+        await page.locator('#volume-button').click();
+        assert.equal(await page.locator('#volume-button').getAttribute('aria-pressed'), 'true');
+        await page.locator('#volume-button').click();
+        assert.equal(await page.locator('#volume-button').getAttribute('aria-pressed'), 'false');
+        await page.locator('#music-button').click();
+        assert.equal(await page.locator('#music-button').getAttribute('aria-pressed'), 'false');
+        await page.locator('#music-button').click();
+        assert.equal(await page.locator('#music-button').getAttribute('aria-pressed'), 'true');
         await page.locator('#letter-button').click();
         assert.equal(await page.locator('#letter-dialog').isVisible(), true);
         assert.equal(await page.locator('#letter-title').innerText(), 'Querida Yadira,');
