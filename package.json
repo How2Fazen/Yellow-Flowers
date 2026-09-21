@@ -1,0 +1,11 @@
+{
+  "name": "yellow-flowers",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "test": "node --test tests/verification.test.mjs",
+    "test:browser": "node --test tests/browser.test.mjs"
+  }
+}
