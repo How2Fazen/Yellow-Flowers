@@ -32,6 +32,17 @@
       <symbol id="icon-volume-off" viewBox="0 0 24 24"><path d="M4 10v4h4l5 4V6l-5 4H4"/><path d="m17 10 4 4m0-4-4 4"/></symbol>
       <symbol id="icon-letter" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></symbol>
       <symbol id="icon-heart" viewBox="0 0 24 24"><path d="M20.8 4.8a5.5 5.5 0 0 0-7.8 0L12 6l-1-1.2a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.4a5.5 5.5 0 0 0 0-7.8Z"/></symbol>
+      <symbol id="decor-sunflower" viewBox="0 0 120 120">
+        <g fill="#f6c84f" stroke="#d89e2f" stroke-width="1.2">
+          <ellipse cx="60" cy="25" rx="10" ry="27"/><ellipse cx="60" cy="25" rx="10" ry="27" transform="rotate(45 60 60)"/>
+          <ellipse cx="60" cy="25" rx="10" ry="27" transform="rotate(90 60 60)"/><ellipse cx="60" cy="25" rx="10" ry="27" transform="rotate(135 60 60)"/>
+          <ellipse cx="60" cy="25" rx="10" ry="27" transform="rotate(180 60 60)"/><ellipse cx="60" cy="25" rx="10" ry="27" transform="rotate(225 60 60)"/>
+          <ellipse cx="60" cy="25" rx="10" ry="27" transform="rotate(270 60 60)"/><ellipse cx="60" cy="25" rx="10" ry="27" transform="rotate(315 60 60)"/>
+        </g>
+        <circle cx="60" cy="60" r="23" fill="#684324"/><circle cx="60" cy="60" r="17" fill="#4a321f"/>
+        <g fill="#d9a64e" opacity=".72"><circle cx="54" cy="54" r="2"/><circle cx="66" cy="54" r="2"/><circle cx="59" cy="65" r="2"/><circle cx="69" cy="64" r="1.8"/><circle cx="50" cy="64" r="1.8"/></g>
+      </symbol>
+      <symbol id="decor-leaf" viewBox="0 0 70 36"><path d="M3 19C18 1 47 0 67 13 52 31 25 38 3 19Z" fill="#758452"/><path d="M7 20c20-5 38-6 55-6" fill="none" stroke="#51643f" stroke-width="1.4"/></symbol>
     </defs>
   </svg>
 
@@ -47,6 +58,7 @@
       <div id="firefly-field" class="access-fireflies"></div>
     </div>
     <div id="magic-glow" class="magic-glow" aria-hidden="true"></div>
+    <div class="access-cinematic-frame" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
     <div class="access-grain" aria-hidden="true"></div>
     <div class="access-orbit orbit-one" aria-hidden="true"></div>
     <div class="access-orbit orbit-two" aria-hidden="true"></div>
@@ -58,6 +70,7 @@
 
     <div class="access-layout">
       <div class="access-intro">
+        <div class="access-love-seal"><span>♡</span><p>Una pequeña puerta<br>hecha solo para ti.</p></div>
         <span class="love-stamp">PARA YADIRA · CON AMOR ♡</span>
         <span class="eyebrow"><span class="tiny-line"></span> ANTES DE ENTRAR AL JARDÍN</span>
         <h1 id="access-title">Tengo algo<br> <em>para ti.</em></h1>
@@ -67,8 +80,9 @@
       </div>
 
       <div class="access-card" id="access-card">
-        <svg class="card-flower card-flower-one" aria-hidden="true"><use href="#icon-flower"/></svg>
-        <svg class="card-flower card-flower-two" aria-hidden="true"><use href="#icon-flower"/></svg>
+        <div class="card-aura" aria-hidden="true"></div>
+        <div class="card-corner-mark card-corner-mark-one" aria-hidden="true"></div>
+        <div class="card-corner-mark card-corner-mark-two" aria-hidden="true"></div>
         <div class="card-topline flex items-center justify-between"><span class="eyebrow">LA PUERTA DE TU JARDÍN</span><svg class="icon"><use href="#icon-heart"/></svg></div>
         <div class="identity-row flex items-center">
           <div class="identity-avatar" aria-hidden="true">Y<span></span></div>
@@ -109,7 +123,39 @@
   </section>
 
   <div id="reveal" class="reveal-screen" hidden tabindex="-1" aria-label="Una sorpresa para ti">
-    <div id="reveal-message" class="reveal-message"><span class="eyebrow">EL SECRETO ERAS TÚ</span><p>Era una sorpresa<br><em>para ti.</em> <span class="reveal-emojis">🌻💛</span></p><span class="reveal-line"></span></div>
+    <div id="reveal-paper-shell" class="reveal-paper-shell">
+      <div class="reveal-paper-texture" aria-hidden="true"></div>
+      <div class="reveal-border" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <svg class="reveal-bouquet reveal-bouquet-left" viewBox="0 0 360 330" aria-hidden="true">
+        <g stroke="#617044" stroke-width="5" stroke-linecap="round" opacity=".86">
+          <path d="M55 310 126 126M87 315 175 118M116 318 205 145M48 308 163 183"/>
+        </g>
+        <use href="#decor-leaf" x="35" y="180" width="100" height="54" transform="rotate(-30 85 207)"/>
+        <use href="#decor-leaf" x="110" y="200" width="105" height="54" transform="rotate(20 160 225)"/>
+        <use href="#decor-leaf" x="138" y="92" width="90" height="46" transform="rotate(-14 183 115)"/>
+        <use href="#decor-leaf" x="188" y="166" width="92" height="48" transform="rotate(33 230 188)"/>
+        <use href="#decor-sunflower" x="58" y="54" width="145" height="145"/>
+        <use href="#decor-sunflower" x="142" y="90" width="118" height="118"/>
+        <use href="#decor-sunflower" x="8" y="120" width="112" height="112"/>
+        <circle cx="233" cy="85" r="5" fill="#f0c457"/><circle cx="254" cy="108" r="4" fill="#f0c457"/><circle cx="221" cy="116" r="3.5" fill="#f0c457"/>
+      </svg>
+      <svg class="reveal-bouquet reveal-bouquet-right" viewBox="0 0 310 280" aria-hidden="true">
+        <g stroke="#617044" stroke-width="5" stroke-linecap="round" opacity=".86">
+          <path d="M250 260 186 106M274 260 211 121M229 260 149 135"/>
+        </g>
+        <use href="#decor-leaf" x="155" y="145" width="92" height="48" transform="rotate(-27 201 169)"/>
+        <use href="#decor-leaf" x="206" y="172" width="90" height="46" transform="rotate(20 250 195)"/>
+        <use href="#decor-leaf" x="115" y="102" width="84" height="44" transform="rotate(-12 158 124)"/>
+        <use href="#decor-sunflower" x="132" y="42" width="132" height="132"/>
+        <use href="#decor-sunflower" x="82" y="93" width="92" height="92"/>
+      </svg>
+      <div id="reveal-message" class="reveal-message">
+        <span class="eyebrow">EL SECRETO ERAS TÚ</span>
+        <p>Era una sorpresa<br><em>para ti.</em></p>
+        <span class="reveal-line"></span>
+        <span class="reveal-dedication">De Erwin para Yadira · con todo mi cariño ♡</span>
+      </div>
+    </div>
   </div>
 
   <main id="garden" class="garden" hidden inert data-view="meadow" aria-labelledby="garden-title">

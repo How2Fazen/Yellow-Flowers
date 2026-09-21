@@ -474,8 +474,9 @@ async function revealGarden() {
   $('reveal').hidden = false;
   $('reveal').focus({ preventScroll: true });
   $('access').inert = true;
-  await wait(850); // A completely black beat before the romantic reveal.
+  await wait(500);
   $('access').hidden = true;
+  $('reveal-paper-shell').classList.add('visible');
   $('reveal-message').classList.add('visible');
   await wait(3300);
   $('garden').hidden = false;
